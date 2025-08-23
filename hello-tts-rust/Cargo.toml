@@ -1,0 +1,28 @@
+[package]
+name = "hello-tts-rust"
+version = "0.1.0"
+edition = "2021"
+description = "Rust implementation supporting both Edge TTS and Google TTS"
+authors = ["Hello TTS Team"]
+
+[dependencies]
+reqwest = { version = "0.11", features = ["json"] }
+tokio = { version = "1.0", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+clap = { version = "4.0", features = ["derive"] }
+rodio = "0.17"
+anyhow = "1.0"
+uuid = { version = "1.0", features = ["v4"] }
+thiserror = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+regex = "1.0"
+log = "0.4"
+env_logger = "0.10"
+
+[dev-dependencies]
+tokio-test = "0.4"
+
+[[bin]]
+name = "hello-tts-rust"
+path = "src/main.rs"

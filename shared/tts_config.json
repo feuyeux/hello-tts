@@ -1,0 +1,108 @@
+{
+  "languages": [
+    {
+      "code": "en-us",
+      "name": "English (US)",
+      "flag": "🇺🇸",
+      "text": "Hello, I can read for you.",
+      "edge_voice": "en-US-AriaNeural",
+      "google_voice": "en",
+      "voice": "en",
+      "alt_voice": ""
+    },
+    {
+      "code": "zh-cn",
+      "name": "Chinese (Mandarin)",
+      "flag": "🇨🇳",
+      "text": "你好，我可以为你朗读。",
+      "edge_voice": "zh-CN-XiaoxiaoNeural",
+      "google_voice": "zh-CN",
+      "voice": "zh-CN",
+      "alt_voice": ""
+    },
+    {
+      "code": "ja-jp",
+      "name": "Japanese",
+      "flag": "🇯🇵",
+      "text": "こんにちは、これを読み上げることができます。",
+      "edge_voice": "ja-JP-NanamiNeural",
+      "google_voice": "ja",
+      "voice": "ja",
+      "alt_voice": ""
+    },
+    {
+      "code": "ko-kr",
+      "name": "Korean",
+      "flag": "🇰🇷",
+      "text": "안녕하세요, 제가 읽어 드릴 수 있습니다.",
+      "edge_voice": "ko-KR-SunHiNeural",
+      "google_voice": "ko",
+      "voice": "ko",
+      "alt_voice": ""
+    },
+    {
+      "code": "de-de",
+      "name": "German",
+      "flag": "🇩🇪",
+      "text": "Hallo, ich kann es für dich vorlesen.",
+      "edge_voice": "de-DE-KatjaNeural",
+      "google_voice": "de"
+    },
+    {
+      "code": "fr-fr",
+      "name": "French",
+      "flag": "🇫🇷",
+      "text": "Bonjour, je peux vous lire ce texte.",
+      "edge_voice": "fr-FR-DeniseNeural",
+      "google_voice": "fr"
+    },
+    {
+      "code": "es-es",
+      "name": "Spanish",
+      "flag": "🇪🇸",
+      "text": "Hola, puedo leer esto para ti.",
+      "edge_voice": "es-ES-ElviraNeural",
+      "google_voice": "es"
+    },
+    {
+      "code": "it-it",
+      "name": "Italian",
+      "flag": "🇮🇹",
+      "text": "Ciao, posso leggerlo per te.",
+      "edge_voice": "it-IT-ElsaNeural",
+      "google_voice": "it"
+    },
+    {
+      "code": "ru-ru",
+      "name": "Russian",
+      "flag": "🇷🇺",
+      "text": "Здравствуйте, я могу прочитать это для вас.",
+      "edge_voice": "ru-RU-SvetlanaNeural",
+      "google_voice": "ru"
+    },
+    {
+      "code": "ar-sa",
+      "name": "Arabic",
+      "flag": "🇸🇦",
+      "text": "مرحبًا، أستطيع قراءة هذا لك.",
+      "edge_voice": "ar-SA-ZariyahNeural",
+      "google_voice": "ar"
+    },
+    {
+      "code": "hi-in",
+      "name": "Hindi",
+      "flag": "🇮🇳",
+      "text": "नमस्ते, मैं आपके लिए इसे पढ़ कर सुना सकता हूँ.",
+      "edge_voice": "hi-IN-SwaraNeural",
+      "google_voice": "hi"
+    },
+    {
+      "code": "pt-pt",
+      "name": "Portuguese (PT)",
+      "flag": "🇵🇹",
+      "text": "Olá, eu posso ler isto para você.",
+      "edge_voice": "pt-PT-FernandoNeural",
+      "google_voice": "pt"
+    }
+  ]
+}
