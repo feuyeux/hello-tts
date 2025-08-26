@@ -24,11 +24,16 @@ python hello_tts.py --backend google --voice "en" --text "Hello"
 ````
 
 ```bash
-edge-tts -h
-gtts-cli -h
+python hello_multilingual.py --backend google
 ```
+
 
 References
 
 - https://github.com/rany2/edge-tts
 - https://github.com/pndurette/gTTS
+
+```bash
+edge-tts -h
+gtts-cli -h
+```

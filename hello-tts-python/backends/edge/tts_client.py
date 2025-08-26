@@ -4,6 +4,7 @@ from voice import Voice
 import logging
 import edge_tts
 import aiofiles
+import os
 from typing import List, Optional
 import sys
 from pathlib import Path
@@ -43,6 +44,18 @@ class TTSClient:
 
     async def list_voices(self) -> List[Voice]:
         if self._voices_cache is None:
+            # Try to load from config file first
+            config_path = "shared/tts_config.json"
+            if os.path.exists(config_path):
+                try:
+                    self._voices_cache = Voice.parse_voices_from_json_file(
+                        config_path)
+                    return self._voices_cache
+                except Exception as e:
+                    logger.warning(
+                        f"Failed to load voices from config file: {e}")
+
+            # Fallback to API
             voices_data = await edge_tts.list_voices()
             self._voices_cache = [
                 Voice(

@@ -36,11 +36,11 @@ fi
 
 # Compile to native executable
 echo "🔨 Compiling to native executable..."
-dart compile exe bin/main.dart -o bin/hello_tts
+dart compile exe bin/hello_tts.dart -o bin/hello_tts
 
 # Create AOT snapshot for faster startup
 echo "⚡ Creating AOT snapshot..."
-dart compile aot-snapshot bin/main.dart -o bin/hello_tts.aot
+dart compile aot-snapshot bin/hello_tts.dart -o bin/hello_tts.aot
 
 echo "✅ Dart build completed successfully!"
 echo "💡 To run: ./dart/bin/hello_tts"

@@ -1,9 +1,8 @@
 /// Hello Edge TTS - Dart Implementation
-/// 
+///
 /// This library provides a Dart interface for Microsoft Edge TTS service.
 library hello_tts;
 
-export 'tts_client.dart';
 export 'tts_processor.dart';
 export 'config_manager.dart';
 export 'audio_player.dart';
@@ -29,29 +28,24 @@ class Voice {
   });
 
   factory Voice.fromJson(Map<String, dynamic> json) {
-    final locale = json['Locale'] ?? '';
-    final language = locale.split('-')[0]; // Extract language code from locale
-    
     return Voice(
       name: json['Name'] ?? '',
       displayName: json['DisplayName'] ?? '',
-      language: language,
+      language: (json['Locale'] ?? '').split('-')[0],
       gender: json['Gender'] ?? '',
-      locale: locale,
+      locale: json['Locale'] ?? '',
       isNeural: (json['VoiceType'] ?? '').contains('Neural'),
       isStandard: (json['VoiceType'] ?? '').contains('Standard'),
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'Name': name,
-      'DisplayName': displayName,
-      'Locale': language,
-      'Gender': gender,
-      'VoiceType': isNeural ? 'Neural' : 'Standard',
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    'Name': name,
+    'DisplayName': displayName,
+    'Locale': locale,
+    'Gender': gender,
+    'VoiceType': isNeural ? 'Neural' : 'Standard',
+  };
 
   @override
   String toString() {

@@ -20,8 +20,7 @@ class TTSProcessor {
       final candidatePaths = [
         '../shared/tts_config.json',
         '../../shared/tts_config.json',
-        '../shared/voice_configs.json',
-        '../../shared/voice_configs.json'
+        'shared/tts_config.json',
       ];
 
       File? file;
@@ -34,40 +33,38 @@ class TTSProcessor {
       }
 
       if (file == null) {
-        throw TTSError('No voice configuration found. Searched: ${candidatePaths.join(', ')}');
+        throw TTSError(
+          'No voice configuration found. Searched: ${candidatePaths.join(', ')}',
+        );
       }
 
       final content = await file.readAsString();
       final Map<String, dynamic> jsonMap = json.decode(content);
       final List<Voice> voices = [];
 
-      // If unified tts_config.json (languages array) is present, use it. Otherwise try legacy formats.
+      // Parse from unified tts_config.json (languages array)
       if (jsonMap.containsKey('languages')) {
         final langs = jsonMap['languages'] as List<dynamic>;
         for (final item in langs) {
           final m = item as Map<String, dynamic>;
           final code = (m['code'] ?? '') as String;
           final name = (m['name'] ?? '') as String;
-          final voiceVal = (m['voice'] ?? m['edge_voice'] ?? m['google_voice'] ?? '') as String;
+          final voiceVal = (m['voice'] ??
+              m['edge_voice'] ??
+              m['google_voice'] ??
+              '') as String;
           if (voiceVal.isEmpty) continue;
-          voices.add(Voice(
-            name: voiceVal,
-            displayName: name.isNotEmpty ? name : voiceVal,
-            language: code.split('-')[0],
-            gender: '',
-            locale: code,
-            isNeural: voiceVal.toLowerCase().contains('neural'),
-            isStandard: !voiceVal.toLowerCase().contains('neural'),
-          ));
-        }
-      } else if (jsonMap.containsKey('popular_voices')) {
-        final popularVoices = jsonMap['popular_voices'] as Map<String, dynamic>;
-        for (var langVoices in popularVoices.values) {
-          if (langVoices is List) {
-            for (var v in langVoices) {
-              voices.add(Voice.fromJson(v as Map<String, dynamic>));
-            }
-          }
+          voices.add(
+            Voice(
+              name: voiceVal,
+              displayName: name.isNotEmpty ? name : voiceVal,
+              language: code.split('-')[0],
+              gender: 'Unknown',
+              locale: code,
+              isNeural: voiceVal.toLowerCase().contains('neural'),
+              isStandard: !voiceVal.toLowerCase().contains('neural'),
+            ),
+          );
         }
       }
 
@@ -79,7 +76,11 @@ class TTSProcessor {
   }
 
   /// 文本转语音
-  Future<Uint8List> synthesizeText(String text, String voiceName, {String format = 'mp3'}) async {
+  Future<Uint8List> synthesizeText(
+    String text,
+    String voiceName, {
+    String format = 'mp3',
+  }) async {
     try {
       if (backend == 'google') {
         return await _synthesizeViaGoogleTTS(text, voiceName, format);
@@ -92,15 +93,24 @@ class TTSProcessor {
   }
 
   /// 调用 Python edge-tts 库进行语音合成
-  Future<Uint8List> _synthesizeViaEdgeTTS(String text, String voiceName, String format) async {
+  Future<Uint8List> _synthesizeViaEdgeTTS(
+    String text,
+    String voiceName,
+    String format,
+  ) async {
     try {
       final tempDir = Directory.systemTemp;
-      final tempFile = File('${tempDir.path}/tts_output_${DateTime.now().millisecondsSinceEpoch}.mp3');
+      final tempFile = File(
+        '${tempDir.path}/tts_output_${DateTime.now().millisecondsSinceEpoch}.mp3',
+      );
       try {
         final result = await Process.run('edge-tts', [
-          '--voice', voiceName,
-          '--text', text,
-          '--write-media', tempFile.path,
+          '--voice',
+          voiceName,
+          '--text',
+          text,
+          '--write-media',
+          tempFile.path,
         ]);
 
         if (result.exitCode != 0) {
@@ -124,7 +134,11 @@ class TTSProcessor {
   }
 
   /// 调用 Python gTTS 库进行语音合成
-  Future<Uint8List> _synthesizeViaGoogleTTS(String text, String voiceName, String format) async {
+  Future<Uint8List> _synthesizeViaGoogleTTS(
+    String text,
+    String voiceName,
+    String format,
+  ) async {
     try {
       // Extract language code from voice name robustly.
       // Examples:
@@ -145,14 +159,18 @@ class TTSProcessor {
       } else if (vn.isNotEmpty) {
         langCode = vn.toLowerCase();
       }
-      
+
       final tempDir = Directory.systemTemp;
-      final tempFile = File('${tempDir.path}/gtts_output_${DateTime.now().millisecondsSinceEpoch}.mp3');
+      final tempFile = File(
+        '${tempDir.path}/gtts_output_${DateTime.now().millisecondsSinceEpoch}.mp3',
+      );
       try {
         final result = await Process.run('gtts-cli', [
           text,
-          '-l', langCode,
-          '-o', tempFile.path,
+          '-l',
+          langCode,
+          '-o',
+          tempFile.path,
         ]);
 
         if (result.exitCode != 0) {
@@ -178,5 +196,10 @@ class TTSProcessor {
   /// 清理语音缓存
   void clearVoiceCache() {
     _cachedVoices = null;
+  }
+
+  /// Release any resources held by this processor (keeps API parity with tests)
+  void dispose() {
+    clearVoiceCache();
   }
 }

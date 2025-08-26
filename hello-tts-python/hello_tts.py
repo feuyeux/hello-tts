@@ -44,35 +44,18 @@ def main():
 
     try:
         cfg = ConfigManager.load_config()
-
-        # Apply speed settings for Google TTS
-        if args.slow:
-            cfg.google_slow_speech = True
-
         create_output_directory(cfg.output_directory)
-
         tts = HelloTTS(backend=args.backend, config=cfg)
 
+        # List voices if requested
         if args.list_voices:
-            try:
-                voices = tts.list_voices()
-                print(f'Found {len(voices)} voices')
-                for i, v in enumerate(voices):
-                    if i >= 50:
-                        break
-                    print(f"{v.name} - {v.locale} - {v.gender}")
-            except Exception as e:
-                logger.error(f"Failed to list voices: {e}")
+            voices = tts.list_voices()
+            print(f'Found {len(voices)} voices')
+            for v in voices[:50]:
+                print(f"{v.name} - {v.locale} - {v.gender}")
             return
 
-        # Generate output filename
-        if args.output:
-            output_file = args.output
-        else:
-            voice_name = args.voice or cfg.default_voice
-            lang = voice_name.split('-')[0] if '-' in voice_name else 'en'
-            timestamp = int(time.time())
-            output_file = f"{cfg.output_directory}/hello_tts_{lang}_{timestamp}.{cfg.output_format}"
+        output_file = args.output if args.output else f"{cfg.output_directory}/hello_tts_{args.voice.split('-')[0] if args.voice else 'en'}_{int(time.time())}.{cfg.output_format}"
 
         logger.info(f"Synthesizing text: {args.text}")
 

@@ -6,9 +6,7 @@
       "flag": "🇺🇸",
       "text": "Hello, I can read for you.",
       "edge_voice": "en-US-AriaNeural",
-      "google_voice": "en",
-      "voice": "en",
-      "alt_voice": ""
+      "google_voice": "en"
     },
     {
       "code": "zh-cn",
@@ -16,9 +14,7 @@
       "flag": "🇨🇳",
       "text": "你好，我可以为你朗读。",
       "edge_voice": "zh-CN-XiaoxiaoNeural",
-      "google_voice": "zh-CN",
-      "voice": "zh-CN",
-      "alt_voice": ""
+      "google_voice": "zh-CN"
     },
     {
       "code": "ja-jp",
@@ -26,9 +22,7 @@
       "flag": "🇯🇵",
       "text": "こんにちは、これを読み上げることができます。",
       "edge_voice": "ja-JP-NanamiNeural",
-      "google_voice": "ja",
-      "voice": "ja",
-      "alt_voice": ""
+      "google_voice": "ja"
     },
     {
       "code": "ko-kr",
@@ -36,9 +30,7 @@
       "flag": "🇰🇷",
       "text": "안녕하세요, 제가 읽어 드릴 수 있습니다.",
       "edge_voice": "ko-KR-SunHiNeural",
-      "google_voice": "ko",
-      "voice": "ko",
-      "alt_voice": ""
+      "google_voice": "ko"
     },
     {
       "code": "de-de",

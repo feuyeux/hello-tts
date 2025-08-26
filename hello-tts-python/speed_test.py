@@ -30,7 +30,6 @@ def test_speech_speeds():
             'backend': 'google',
             'voice': 'zh',
             'config_updates': {'google_slow_speech': False},
-            'ssml': False,
             'text': text
         },
         {
@@ -38,7 +37,6 @@ def test_speech_speeds():
             'backend': 'google',
             'voice': 'zh',
             'config_updates': {'google_slow_speech': True},
-            'ssml': False,
             'text': text
         },
         {
@@ -46,24 +44,7 @@ def test_speech_speeds():
             'backend': 'edge',
             'voice': 'zh-CN-XiaoxiaoNeural',
             'config_updates': {},
-            'ssml': False,
             'text': text
-        },
-        {
-            'name': 'Edge TTS - 快速 (SSML)',
-            'backend': 'edge',
-            'voice': 'zh-CN-XiaoxiaoNeural',
-            'config_updates': {},
-            'ssml': True,
-            'text': f'<speak><prosody rate="fast">{text}</prosody></speak>'
-        },
-        {
-            'name': 'Edge TTS - 超快速 (SSML)',
-            'backend': 'edge',
-            'voice': 'zh-CN-XiaoxiaoNeural',
-            'config_updates': {},
-            'ssml': True,
-            'text': f'<speak><prosody rate="x-fast">{text}</prosody></speak>'
         }
     ]
 
@@ -91,7 +72,7 @@ def test_speech_speeds():
             # Synthesize
             start_time = time.time()
             audio = tts.synthesize_text(
-                test['text'], voice=test['voice'], use_ssml=test['ssml'])
+                test['text'], voice=test['voice'])
             synthesis_time = time.time() - start_time
 
             # Save
@@ -105,7 +86,6 @@ def test_speech_speeds():
             print(f"❌ 错误: {e}")
 
     print(f"\n🎯 测试完成！请播放 output/ 目录中的音频文件来比较语速效果。")
-    print("推荐使用 Edge TTS 的 SSML 功能来获得最快的中文语速。")
 
 
 if __name__ == '__main__':

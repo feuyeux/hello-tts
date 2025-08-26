@@ -51,19 +51,14 @@ impl AudioPlayer {
     pub fn play_audio_data(
         &self,
         audio_data: Vec<u8>,
-        format_hint: Option<&str>,
+        _format_hint: Option<&str>,
     ) -> Result<(), AudioError> {
-        let _format_hint = format_hint.unwrap_or("mp3"); // Store for potential future use
-
         let cursor = Cursor::new(audio_data);
         let source = Decoder::new(cursor)
             .map_err(|e| AudioError::Decode(format!("Failed to decode audio data: {}", e)))?;
 
         self.sink.append(source);
-
-        // Wait for playback to complete
         self.sink.sleep_until_end();
-
         Ok(())
     }
 
