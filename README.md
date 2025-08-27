@@ -54,7 +54,7 @@ cd hello-tts-python
 python3 -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python hello_tts.py --text "Hello" --voice "en-US-JennyNeural"
+python hello_tts.py --text "Hello World" --voice "en-US-JennyNeural"
 ```
 
 #### Dart

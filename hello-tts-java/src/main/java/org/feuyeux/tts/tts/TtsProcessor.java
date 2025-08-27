@@ -2,7 +2,10 @@ package org.feuyeux.tts.tts;
 
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,6 +27,7 @@ public record TtsProcessor(String backend) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 log.info("开始文本合成 - 后端: {}, 语音: {}, 文本长度: {} 字符", backend, voice, text.length());
+                log.debug("文本内容: {}", text); // 添加这行来打印实际的文本内容
                 byte[] result;
                 if ("google".equals(backend)) {
                     result = synthesizeViaGoogleTTS(text, voice);
@@ -41,15 +45,22 @@ public record TtsProcessor(String backend) {
 
     private byte[] synthesizeViaEdgeTTS(String text, String voice) throws Exception {
         File tempFile = File.createTempFile("tts_output_", ".mp3");
+        File textFile = File.createTempFile("tts_text_", ".txt");
         tempFile.deleteOnExit();
+        textFile.deleteOnExit();
+
         try {
+            // Write text to file with UTF-8 encoding
+            Files.writeString(textFile.toPath(), text, StandardCharsets.UTF_8);
+
             // Try edge-tts command first
             ProcessBuilder pb = new ProcessBuilder(
                     "edge-tts",
                     "--voice", voice,
-                    "--text", text,
-                    "--write-media", tempFile.getAbsolutePath()
-            );
+                    "--file", textFile.getAbsolutePath(),
+                    "--write-media", tempFile.getAbsolutePath());
+            pb.environment().put("PYTHONIOENCODING", "UTF-8");
+            pb.redirectErrorStream(true);
             Process process = pb.start();
             int exitCode = process.waitFor();
             log.info("edge-tts 进程退出码: {}", exitCode);
@@ -59,8 +70,8 @@ public record TtsProcessor(String backend) {
                         "python", "-m", "edge_tts",
                         "--voice", voice,
                         "--text", text,
-                        "--write-media", tempFile.getAbsolutePath()
-                );
+                        "--write-media", tempFile.getAbsolutePath());
+                pythonPb.environment().put("PYTHONIOENCODING", "UTF-8");
                 Process pythonProcess = pythonPb.start();
                 int pythonExitCode = pythonProcess.waitFor();
                 log.info("python -m edge_tts 进程退出码: {}", pythonExitCode);
@@ -94,8 +105,7 @@ public record TtsProcessor(String backend) {
                     "gtts-cli",
                     text,
                     "-l", extractLangFromVoice(voice),
-                    "-o", tempFile.getAbsolutePath()
-            );
+                    "-o", tempFile.getAbsolutePath());
 
             processBuilder.redirectErrorStream(true);
             Process process = processBuilder.start();
@@ -204,14 +214,16 @@ public record TtsProcessor(String backend) {
                 CompletableFuture<IndexedResult> future = CompletableFuture.supplyAsync(() -> {
                     try {
                         semaphore.acquire();
-                        log.info("处理并发项 {}/{}: {}...", index + 1, texts.length, text.substring(0, Math.min(50, text.length())));
+                        log.info("处理并发项 {}/{}: {}...", index + 1, texts.length,
+                                text.substring(0, Math.min(50, text.length())));
 
                         CompletableFuture<byte[]> audioFuture = synthesizeText(text, voice);
                         byte[] audioData = audioFuture.get();
                         return new IndexedResult(index, audioData);
                     } catch (Exception e) {
                         log.error("合成并发项 {} 失败: {}", index + 1, e.getMessage());
-                        throw new RuntimeException("Failed to synthesize concurrent item " + (index + 1) + ": " + e.getMessage(), e);
+                        throw new RuntimeException(
+                                "Failed to synthesize concurrent item " + (index + 1) + ": " + e.getMessage(), e);
                     } finally {
                         semaphore.release();
                     }
@@ -246,8 +258,8 @@ public record TtsProcessor(String backend) {
     }
 
     /**
-         * Helper class for maintaining order in concurrent processing
-         */
-        private record IndexedResult(int index, byte[] audioData) {
+     * Helper class for maintaining order in concurrent processing
+     */
+    private record IndexedResult(int index, byte[] audioData) {
     }
 }

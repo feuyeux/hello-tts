@@ -28,9 +28,9 @@ struct Cli {
     #[arg(short, long, default_value = "output")]
     output_dir: String,
 
-    /// Play audio after synthesis
-    #[arg(short, long)]
-    play: bool,
+    /// Don't play audio after synthesis (default is to play)
+    #[arg(long)]
+    noplay: bool,
 
     /// List available voices
     #[arg(short = 'l', long)]
@@ -193,7 +193,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let lang = cli.language.unwrap_or_else(|| "en".to_string());
         run_demo(&lang).await?;
     } else if let Some(text) = cli.text {
-        handle_speak(text, cli.voice, cli.backend, cli.output_dir, cli.play).await?;
+        handle_speak(text, cli.voice, cli.backend, cli.output_dir, !cli.noplay).await?;
     } else {
         warn!("No text provided. Use -t or --text to specify text to synthesize.");
         warn!("Or use --list-voices to see available voices, or --demo to run a demo.");

@@ -9,6 +9,8 @@ This directory contains the Java implementation of the hello-edge-tts project us
 cd hello-tts-java
 mvn compile
 
+mvn compile; chcp 65001; mvn exec:java "-Dexec.mainClass=org.feuyeux.tts.HelloTTS" "-Dexec.jvmArgs=-Dfile.encoding=UTF-8"
+
 mvn exec:java -Dexec.mainClass="org.feuyeux.tts.HelloTTS"
 mvn exec:java -Dexec.mainClass="org.feuyeux.tts.HelloTTS" -Dexec.args="--backend edge --text 你好世界 --voice zh-CN-XiaoxiaoNeural"
 mvn exec:java -Dexec.mainClass="org.feuyeux.tts.HelloTTS" -Dexec.args="--backend google --text 'Hello World' --voice en"

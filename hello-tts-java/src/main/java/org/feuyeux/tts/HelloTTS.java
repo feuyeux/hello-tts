@@ -8,6 +8,9 @@ import org.feuyeux.tts.tts.Voice;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -15,7 +18,8 @@ import java.util.stream.Collectors;
 
 /**
  * Main class demonstrating Edge TTS functionality in Java
- * Provides command-line interface for text-to-speech conversion with voice selection and multi-language support
+ * Provides command-line interface for text-to-speech conversion with voice
+ * selection and multi-language support
  */
 @Slf4j
 public class HelloTTS {
@@ -24,7 +28,7 @@ public class HelloTTS {
     private static final String VOICE_CONFIG_PATH = "../shared/tts_config.json";
 
     public static void main(String[] args) {
-        log.info("=== Hello Edge TTS - Java实现启动 ===");
+        log.info("=== Hello Edge TTS - Java 实现启动 ===");
         final Options options = createCommandLineOptions();
         CommandLineParser parser = new DefaultParser();
         try {
@@ -109,7 +113,7 @@ public class HelloTTS {
         formatter.printHelp("java -jar hello-edge-tts.jar [OPTIONS]",
                 "\nJava implementation of Edge TTS demonstration\n\n",
                 options,
-                """                        
+                """
                         Examples:
                           java -jar hello-edge-tts.jar
                           java -jar hello-edge-tts.jar --text "Hello from Java!" --voice en-US-DavisNeural
@@ -164,9 +168,20 @@ public class HelloTTS {
         if (languageFilter != null) {
             voice = findVoiceByLanguage(languageFilter, voice);
         }
-        // Generate output filename if not specified
+        // Generate output filename if not specified and ensure output directory exists
+        String outputDir = "output";
         if (outputFile == null) {
-            outputFile = generateOutputFilename(backend,voice);
+            outputFile = generateOutputFilename(backend, voice);
+            outputFile = Paths.get(outputDir, outputFile).toString();
+        }
+        // Ensure output directory exists
+        try {
+            Path outPath = Paths.get(outputFile).getParent();
+            if (outPath != null && !Files.exists(outPath)) {
+                Files.createDirectories(outPath);
+            }
+        } catch (IOException e) {
+            log.warn("Could not create output directory: {}", e.getMessage());
         }
         log.info("Text: {} | Voice: {} | Output: {}", text, voice, outputFile);
         TtsProcessor client = new TtsProcessor(backend);
@@ -176,12 +191,16 @@ public class HelloTTS {
             CompletableFuture<Void> saveFuture = client.saveAudio(audioFuture, outputFile);
             saveFuture.get();
             log.info("✓ Audio saved to: {}", outputFile);
-            // Play the audio if requested
+            // Play the audio if requested (non-fatal on failure)
             if (shouldPlay) {
                 log.info("Playing audio...");
                 AudioPlayer player = new AudioPlayer();
-                player.playFile(outputFile);
-                log.info("✓ Playback completed!");
+                try {
+                    player.playFileAsync(outputFile).get();
+                    log.info("✓ Playback completed!");
+                } catch (Exception e) {
+                    log.warn("Could not play audio (playback is non-fatal): {}", e.getMessage());
+                }
             }
 
         } catch (ExecutionException | InterruptedException e) {
@@ -195,6 +214,11 @@ public class HelloTTS {
      */
     private static String findVoiceByLanguage(String languageCode, String fallbackVoice) {
         try {
+            // 直接映射已知的语音
+            if ("zh-CN".equals(languageCode)) {
+                return "zh-CN-XiaoxiaoNeural";
+            }
+
             List<Voice> voices = loadVoicesFromConfig();
             List<Voice> matchingVoices = Voice.getVoicesByLanguage(voices, languageCode).toList();
             if (!matchingVoices.isEmpty()) {
@@ -217,7 +241,11 @@ public class HelloTTS {
     private static String generateOutputFilename(String backend, String voice) {
         String lang = voice.split("-")[0];
         long timestamp = System.currentTimeMillis() / 1000;
-        return "edge".equals(backend)?"edgetts_":"gtts_" + lang + "_java_" + timestamp + ".mp3";
+        if ("edge".equals(backend)) {
+            return "edgetts_" + lang + "_java_" + timestamp + ".mp3";
+        } else {
+            return "gtts_" + lang + "_java_" + timestamp + ".mp3";
+        }
     }
 
     /**
