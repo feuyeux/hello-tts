@@ -37,16 +37,6 @@ A multi-language TTS demonstration using **Microsoft Edge TTS** and **Google TTS
 
 ### Run Examples
 
-```bash
-# Using Edge TTS (default)
-./run.sh --language english --backend edge
-
-# Using Google TTS
-./run.sh --language chinese --backend google
-```
-
-### Language-specific Setup
-
 #### Python
 
 ```bash
@@ -70,7 +60,7 @@ dart run bin/hello_tts.dart --text "Hello World" --voice "en-US-JennyNeural"
 ```bash
 cd hello-tts-java
 mvn compile
-mvn exec:java -Dexec.mainClass="org.feuyeux.tts.HelloTTS"
+chcp 65001; mvn exec:java "-Dexec.mainClass=org.feuyeux.tts.HelloTTS"
 ```
 
 #### Rust

@@ -23,4 +23,5 @@ java -jar target/hello-edge-tts-standalone.jar --help
 
 ```bash
 mvn exec:java -Dexec.mainClass="org.feuyeux.tts.HelloMultilingual" -Dexec.args="--backend google"
+chcp 65001; mvn exec:java "-Dexec.mainClass=org.feuyeux.tts.HelloMultilingual" "-Dexec.args=--backend google"
 ```
