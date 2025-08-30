@@ -28,7 +28,7 @@ def main():
     """Main entry point for the CLI."""
     parser = argparse.ArgumentParser(description='Hello TTS unified CLI')
     parser.add_argument(
-        '--text', '-t', default='Hello, World!', help='Text to synthesize')
+        '--text', '-t', default='Hello World! This is a demonstration of TTS in Python.', help='Text to synthesize')
     parser.add_argument('--voice', '-v', default=None, help='Voice to use')
     parser.add_argument('--backend', '-b',
                         choices=['edge', 'google'], help='Backend to use')

@@ -92,7 +92,7 @@ Future<void> displayVoicesByLanguage(TTSProcessor client,
 /// Main function
 Future<void> main(List<String> arguments) async {
   final parser = ArgParser()
-    ..addOption('text', abbr: 't', help: 'Text to synthesize')
+    ..addOption('text', abbr: 't', help: 'Text to synthesize', defaultsTo: 'Hello World! This is a demonstration of TTS in Dart.')
     ..addOption('voice',
         abbr: 'v', help: 'Voice to use', defaultsTo: 'en-US-AriaNeural')
     ..addOption('backend',
@@ -191,7 +191,9 @@ Future<void> main(List<String> arguments) async {
     final format = results['format'] as String;
     final play = results['play'] as bool && !(results['no-play'] as bool);
 
-    if (text == null) {
+    // text will now have a default value, so this check is no longer needed
+    // but we keep it for safety in case the default is somehow null
+    if (text == null || text.isEmpty) {
       final logger = Logger('main');
       logger.severe('Error: --text must be provided');
       logger.info('Use --help for usage information');

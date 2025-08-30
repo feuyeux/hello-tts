@@ -62,7 +62,7 @@ public class HelloTTS {
         options.addOption(Option.builder("t")
                 .longOpt("text")
                 .hasArg()
-                .desc("Text to convert to speech (default: 'Hello, World!')")
+                .desc("Text to convert to speech (default: 'Hello World! This is a demonstration of TTS in Java.')")
                 .build());
 
         options.addOption(Option.builder("v")
@@ -159,7 +159,7 @@ public class HelloTTS {
      */
     private static void runTTSConversion(CommandLine cmd) throws Exception {
         // Get parameters from command line or use defaults
-        String text = cmd.getOptionValue("text", "Hello, World! This is a demonstration of TTS in Java.");
+        String text = cmd.getOptionValue("text", "Hello World! This is a demonstration of TTS in Java.");
         String voice = cmd.getOptionValue("voice", DEFAULT_VOICE);
         String outputFile = cmd.getOptionValue("output");
         String languageFilter = cmd.getOptionValue("language");

@@ -13,8 +13,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 #[command(version = "0.1.0")]
 struct Cli {
     /// Text to convert to speech
-    #[arg(short, long)]
-    text: Option<String>,
+    #[arg(short, long, default_value = "Hello World! This is a demonstration of TTS in Rust.")]
+    text: String,
 
     /// Voice to use for synthesis
     #[arg(short, long, default_value = "en-US-AriaNeural")]
@@ -192,11 +192,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     } else if cli.demo {
         let lang = cli.language.unwrap_or_else(|| "en".to_string());
         run_demo(&lang).await?;
-    } else if let Some(text) = cli.text {
-        handle_speak(text, cli.voice, cli.backend, cli.output_dir, !cli.noplay).await?;
     } else {
-        warn!("No text provided. Use -t or --text to specify text to synthesize.");
-        warn!("Or use --list-voices to see available voices, or --demo to run a demo.");
+        // text now has a default value, so we can always use it
+        handle_speak(cli.text, cli.voice, cli.backend, cli.output_dir, !cli.noplay).await?;
     }
 
     Ok(())
