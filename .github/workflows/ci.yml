@@ -15,7 +15,7 @@ jobs:
         python-version: [3.8, 3.9, '3.10', '3.11']
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
@@ -63,7 +63,7 @@ jobs:
         dart-version: ['3.0', '3.1', 'stable']
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up Dart ${{ matrix.dart-version }}
       uses: dart-lang/setup-dart@v1
@@ -117,7 +117,7 @@ jobs:
         rust-version: [stable, beta, nightly]
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up Rust ${{ matrix.rust-version }}
       uses: actions-rs/toolchain@v1
@@ -174,7 +174,7 @@ jobs:
         java-version: [11, 17, 21]
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up JDK ${{ matrix.java-version }}
       uses: actions/setup-java@v3
@@ -223,7 +223,7 @@ jobs:
     needs: [python, dart, rust, java]
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     
     - name: Set up Python
       uses: actions/setup-python@v4
@@ -265,7 +265,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: 0
     
